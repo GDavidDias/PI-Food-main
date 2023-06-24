@@ -5,11 +5,12 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('recipe', {
     id:{
-      type:DataTypes.INTEGER,
+      type:DataTypes.UUID,
       allowNull:false,
-      primaryKey:true
+      primaryKey:true,
+      defaultValue:DataTypes.UUIDV4
     },
-    name: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -17,16 +18,16 @@ module.exports = (sequelize) => {
       type:DataTypes.STRING,
       allowNull:false
     },
-    resume:{
-      type:DataTypes.STRING,
+    summary:{
+      type:DataTypes.TEXT,
       allowNull:false      
     },
     healthScore:{
       type:DataTypes.INTEGER,
       allowNull:false
     },
-    summary:{
-      type:DataTypes.TEXT,
+    sourceUrl:{
+      type:DataTypes.STRING,
       allowNull:false
     }
   });

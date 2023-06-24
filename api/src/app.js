@@ -10,6 +10,7 @@ const server = express();
 
 server.name = 'API';
 
+//!CONFIGURAMOS LOS MIDDLEWARE - los filtros de la request
 server.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 server.use(bodyParser.json({ limit: '50mb' }));
 server.use(cookieParser());
@@ -23,6 +24,17 @@ server.use((req, res, next) => {
 });
 
 server.use('/', routes);
+
+//-------------pruebas
+server.use((req,res,next)=>{
+  console.log("estoy pasando por el middleware :)");
+  next();
+});
+//-->un ENDPOINT GET
+// server.get('/',(req,res)=>{
+//   res.status(200).send("ok");
+// })
+//-------------
 
 // Error catching endware.
 server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
