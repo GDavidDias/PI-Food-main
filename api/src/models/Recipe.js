@@ -26,9 +26,13 @@ module.exports = (sequelize) => {
       type:DataTypes.INTEGER,
       allowNull:false
     },
-    sourceUrl:{
-      type:DataTypes.STRING,
-      allowNull:false
+    // sourceUrl:{
+    //   type:DataTypes.STRING,
+    //   allowNull:false
+    // },
+    steps:{
+      type:DataTypes.JSON,
+      allowNull:false,
     }
   });
 };

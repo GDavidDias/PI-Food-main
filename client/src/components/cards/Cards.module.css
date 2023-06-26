@@ -1,0 +1,6 @@
+.listCards {
+    display: flex;
+    flex-Wrap: wrap;
+    align-items: stretch;
+    justify-content: space-evenly;
+  }

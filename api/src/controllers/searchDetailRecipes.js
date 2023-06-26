@@ -17,37 +17,58 @@ const searchDetailRecipes = async function(req,res){
     let detailRecipe = {}
     const {idRecipe} = req.params;
     console.log("parametro recibido: ",idRecipe);
+    //console.log("tipo dato: ",!isNaN(idRecipe));
     if(!idRecipe) return res.status(401).send("Falta enviar idRecipe");
     try{
-        let respApi
-        if(IS_API_LOCAL === 'true'){
-            //BUSCA EN API LOCAL
-            //console.log(`${API_LOCAL_HOST}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`);
-            respApi = await axios (`${API_LOCAL_HOST}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`)
+        if(!isNaN(idRecipe)){
+            //Si idRecipe es un numero
+            console.log("busca en API")
+            let respApi
+            if(IS_API_LOCAL === 'true'){
+                //BUSCA EN API LOCAL
+                //console.log(`${API_LOCAL_HOST}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`);
+                console.log("busco en api local")
+                respApi = await axios (`${API_LOCAL_HOST}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`)
+                // console.log("axios trae: ",respApi.data);
+            }else{
+                //BUSCA EN API EXTERNA
+                console.log("busco en api externa")
+                respApi = await axios (`${API_URL}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`)
+            }
+    
+            if(respApi){
+                const {id,title,image,summary,healthScore,analyzedInstructions} = respApi.data;
+                //console.log("que trae analyzedInstructions.steps: ",analyzedInstructions[0].steps)
+                //const onlySteps = analyzedInstructions.steps
+                detailRecipe = {id,
+                                title,
+                                image,
+                                summary,
+                                healthScore,
+                                steps:analyzedInstructions[0].steps
+                            }
+                //console.log("que trae respApi: ", respApi.data);
+                return res.status(200).json(detailRecipe);
+            }else{
+                return res.status(404).send(`No se encontraron datos en la API para el codigo: ${idRecipe}`);
+            }
+
         }else{
-            //BUSCA EN API EXTERNA
-            respApi = await axios (`${API_URL}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`)
+            //BUSCA EN BD
+            console.log("Busca en BD")
+            const respBd = await Recipe.findByPk(idRecipe);
+            if(respBd){
+                const {id,title,image,summary,healthScore,steps} = respBd;
+                detailRecipe = {id,title,image,summary,healthScore,steps}
+                return res.status(200).json(detailRecipe);
+            }else{
+                return res.status(404).send(`No se encontraron datos en la BD para el codigo: ${idRecipe}`);
+            }
         }
-
-        //console.log("axios trae: ",resp);
-        if(respApi){
-            const {id,title,image,summary,healthScore,sourceUrl} = respApi.data;
-            detailRecipe = {id,title,image,summary,healthScore,sourceUrl}
-            return res.status(200).send(detailRecipe);
-        }
-
-        //BUSCA EN BD
-        const respBd = await Recipe.findByPk(idRecipe);
-        if(respBd){
-            const {id,title,image,summary,healthScore,sourceUrl} = respBd;
-            detailRecipe = {id,title,image,summary,healthScore,sourceUrl}
-            return res.status(200).send(detailRecipe);
-        }
-
-        return res.status(401).send(`El codigo: ${idRecipe} no corresponde a una Receta existente`)
 
     }catch(error){
-        res.status(401).send("Error en la busqueda de Recetas", error.message)
+        console.log("ingresa a ERROR");
+        res.status(404).send("Error en la busqueda de Recetas", error.message)
     }
 }
 
