@@ -10,14 +10,14 @@
 const axios = require("axios");
 require('dotenv').config();
 const {API_URL, API_KEY, API_LOCAL_HOST, IS_API_LOCAL} = process.env;
-const { Recipe, Op } = require("../db.js");
+const { Recipe, Diet, Op } = require("../db.js");
 
 const searchDetailRecipes = async function(req,res){
     console.log("ingresa a detailRecipes")
     let detailRecipe = {}
     const {idRecipe} = req.params;
     console.log("parametro recibido: ",idRecipe);
-    //console.log("tipo dato: ",!isNaN(idRecipe));
+    //console.log("tipo dato: ",!isNaN(idRecipe)); 
     if(!idRecipe) return res.status(401).send("Falta enviar idRecipe");
     try{
         if(!isNaN(idRecipe)){
@@ -29,23 +29,30 @@ const searchDetailRecipes = async function(req,res){
                 //console.log(`${API_LOCAL_HOST}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`);
                 console.log("busco en api local")
                 respApi = await axios (`${API_LOCAL_HOST}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`)
-                // console.log("axios trae: ",respApi.data);
+                //console.log("axios trae: ",respApi.data);
             }else{
                 //BUSCA EN API EXTERNA
                 console.log("busco en api externa")
                 respApi = await axios (`${API_URL}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`)
+                //console.log("axios trae: ",respApi.data);
             }
     
             if(respApi){
-                const {id,title,image,summary,healthScore,analyzedInstructions} = respApi.data;
+                const {id,title,image,summary,healthScore,analyzedInstructions,diets} = respApi.data;
                 //console.log("que trae analyzedInstructions.steps: ",analyzedInstructions[0].steps)
                 //const onlySteps = analyzedInstructions.steps
+                //console.log("que trae analyzedInstructions: ", analyzedInstructions.length);
+                //  let stepresponse
+                //  if (analyzedInstructions.length!==0) stepresponse= analyzedInstructions[0].steps
+                //  else stepresponse=[];
+
                 detailRecipe = {id,
                                 title,
                                 image,
                                 summary,
                                 healthScore,
-                                steps:analyzedInstructions[0].steps
+                                steps: analyzedInstructions.length!==0 ?analyzedInstructions[0].steps :[],
+                                diets
                             }
                 //console.log("que trae respApi: ", respApi.data);
                 return res.status(200).json(detailRecipe);
@@ -56,10 +63,21 @@ const searchDetailRecipes = async function(req,res){
         }else{
             //BUSCA EN BD
             console.log("Busca en BD")
-            const respBd = await Recipe.findByPk(idRecipe);
+            const respBd = await Recipe.findByPk(idRecipe,{
+                include: Diet,
+            });
+            //console.log("que trae respBd: ",respBd)
             if(respBd){
-                const {id,title,image,summary,healthScore,steps} = respBd;
-                detailRecipe = {id,title,image,summary,healthScore,steps}
+                const {id,title,image,summary,healthScore,steps,diets} = respBd;
+                console.log("Como viene diets: ",diets?.map(diet=>diet.name))
+                detailRecipe = {id,
+                                title,
+                                image,
+                                summary,
+                                healthScore,
+                                steps,
+                                diets: diets?.map(diet=>diet.name),
+                            }
                 return res.status(200).json(detailRecipe);
             }else{
                 return res.status(404).send(`No se encontraron datos en la BD para el codigo: ${idRecipe}`);

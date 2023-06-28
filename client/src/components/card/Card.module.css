@@ -14,11 +14,22 @@
 }
 .divCard img{
     width: 80%;
+    height: 30%;
     object-fit: cover;
     /* margin: 15px; */
-    border-radius: 100%;
+    border-radius: 50%;
 }
 .divCard li{
     color: rgb(4, 6, 121);
     text-align: left;
+}
+.health{
+    margin:2px 2px 0 0;
+    border-radius: 50%;
+    height: 5%;
+    width: 15%;
+    background-color: white;
+    color:blue;
+    box-shadow: 0 3px 3px grey;
+
 }

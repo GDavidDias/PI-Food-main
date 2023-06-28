@@ -62,7 +62,7 @@ const searchRecipes = async function(req,res){
         console.log("que trae recipesFindFilter: ")
         console.log(listRecipesBd)
 
-        //UNIFICA ARREGLOS
+        //UNIFICA ARREGLOS 
         const listAllRecipes = listRecipesApi.concat(listRecipesBd);        
         
         //console.log("que trae listRecipes: ", listRecipes)

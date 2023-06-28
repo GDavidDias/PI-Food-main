@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADD_ALL , SEARCH_RECIPES, ERROR} from "./types";
+import { ADD_ALL , SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER} from "./types";
   const URL = 'http://localhost:3001';
 
 //ACTION -> addAllRecipes
@@ -10,12 +10,6 @@ export const addAllRecipes = () => async(dispatch)=>{
     const {data} = await axios.get(`${URL}/recipes/`);
     //console.log("que trae axios.get")
     //console.log(response);
-    // const response = [
-    //   {id:1,name:"carne con salchichas"},
-    //   {id:2,name:"arroz con pollo"},
-    //   {id:3,name:"sopa de caracol"},
-    //   {id:4,name:"empanadas"},
-    // ]
     return dispatch({
         type:ADD_ALL,
         payload:data,
@@ -35,5 +29,32 @@ export const searchRecipes = (value) => async(dispatch)=>{
       type:ERROR,
       payload:[]
     })
+  }
+};
+
+export const addAllDiets = () => async (dispatch)=>{
+  console.log("entra a action addAllDiets")
+  try{
+    const {data} = await axios.get(`${URL}/diets`);
+    return dispatch({
+      type:ADD_ALL_DIETS,
+      payload:data
+    })
+  }catch(error){
+    console.log("error en carga dietas")
+  }
+};
+
+export const orderCards = (order)=>{
+  return{
+    type:ORDER,
+    payload:order,
+  }
+};
+
+export const filterCard = (filter)=>{
+  return{
+    type:FILTER,
+    payload:filter
   }
 };

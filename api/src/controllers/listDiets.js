@@ -51,14 +51,23 @@ const listDiets = async function(req,res){
             
             console.log("antes de crear")
             console.log(listFilter);
-    
-            const allDiets = await Diet.bulkCreate(listFilter);
+
+            //Consulto si no existen dietas cargadas y las cargo
+            let cantidadregistros = await Diet.count();
+            console.log("que trae diets: ",cantidadregistros);
+            let allDiets
+            if(cantidadregistros===0){
+                allDiets = await Diet.bulkCreate(listFilter);
+            }else{
+                allDiets = await Diet.findAll();
+            }
             return res.status(200).json(allDiets);
+    
         }else{
-            return res.status(401).send("No se encontraron datos de Dietas");
+            return res.status(404).send("No se encontraron datos de Dietas");
         }
     }catch(error){
-        res.status(401).send("Error en la insercion de la tabla Diets", error.message);
+        res.status(404).send("Error en la insercion de la tabla Diets", error.message);
     }
 }
 
