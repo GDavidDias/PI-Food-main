@@ -7,15 +7,16 @@ import Cards from './components/cards/Cards';
 import * as actions from './redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Detail from './components/detail/Detail';
+import Form from './components/form/Form';
 
 
 function App() {
 
   const recipes = useSelector((state)=>state.filterRecipes)
-  console.log("que trae useSelector -allRecipes: ", recipes)
+  // console.log("que trae useSelector -allRecipes: ", recipes)
 
   const diets = useSelector((state)=>state.allDiets)
-  console.log("que trae useSelector -allDiets: ", diets)
+  // console.log("que trae useSelector -allDiets: ", diets)
   
   const location = useLocation();
 
@@ -26,7 +27,7 @@ function App() {
     //despues de montar el componente, setear las recetas
     dispatch(actions.addAllRecipes());
     dispatch(actions.addAllDiets());
-  },[dispatch])
+  },[])
 
   const onSearch = async (value)=>{
     dispatch(actions.searchRecipes(value));
@@ -46,6 +47,7 @@ function App() {
             />} 
           />
           <Route exact path='/detail/:id' element={<Detail/>} />
+          <Route exact path='/form' element={<Form/>} />
         </Routes>
       </div>
     </div>

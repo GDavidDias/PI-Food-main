@@ -16,7 +16,7 @@ export default function Detail(props){
             const {data} = await axios.get(`${URL}/recipes/${id}`);
             console.log("Que trae data de axios: ",data)
             if(data.id){
-                setRecipe(data)
+                setRecipe(data);
             }else{
                 window.alert('No hay presonajes con ese id')
             }
@@ -24,6 +24,10 @@ export default function Detail(props){
             console.log("error en busqueda de recetas por id")
         }
     },[id]);
+
+    useEffect(()=>{
+        document.getElementById('ContenedorDescripcion').innerHTML=recipe.summary;
+    },[recipe])
     console.log("como setea recipes en Detail: ", recipe);
 
     
@@ -33,11 +37,22 @@ export default function Detail(props){
                 <h1>{recipe.title ?recipe.title :null}</h1>
                 <h3>ID | {recipe.id ?recipe.id :null}</h3>
                 <h3>HEALT | {recipe.healthScore ?recipe.healthScore :null}</h3>
-                <h3>RESUME | {recipe.summary ?recipe.summary :null}</h3>
-                {/* <h3>TIPOS DIETA | {recipe.summary ?recipe.summary :null}</h3> */}
+            <div>
+                <h3>Descripcion:</h3>
+                <div id="ContenedorDescripcion"></div>
+                
+            </div>
             </div>
             <div>
                 <img src={recipe.image ?recipe.image :null} alt={recipe.title}/>
+            </div>
+            <div>
+                <h3>Tipos de Dieta:</h3>
+                <h3>
+                    {
+                        new Intl.ListFormat("es").format(recipe.diets)
+                    }
+                </h3>
             </div>
             <div>
                 <h3>PASO A PASO:</h3>
@@ -46,20 +61,9 @@ export default function Detail(props){
                         <li key={index}>
                             Paso: {step.number} - 
                             Descripcion: {step.step}
-
                         </li>
                     )) 
                 }
-                </ul>
-            </div>
-            <div>
-                <h3>Tipos de Dieta:</h3>
-                <ul>
-                    {
-                        recipe.diets?.map((diet,index)=>(
-                            <li key={index}>{diet}</li>
-                        ))
-                    }
                 </ul>
             </div>
         </div>

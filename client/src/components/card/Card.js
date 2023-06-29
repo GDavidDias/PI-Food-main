@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import style from "./Card.module.css";
 
 export default function Card(props){
-    //console.log("Entra a Card, que trae props: ", props)
+    console.log("Entra a Card, que trae props: ", props)
     return(
         <div className={style.divCard}>
             <Link to={`/detail/${props.id}`}>
