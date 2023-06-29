@@ -1,18 +1,17 @@
 import './App.css';
-import { useState, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Landing from './components/landing/Landing.js';
 import Nav from './components/nav/Nav';
-import Cards from './components/cards/Cards';
 import * as actions from './redux/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Detail from './components/detail/Detail';
 import Form from './components/form/Form';
+import Home from './components/home/Home';
 
 
 function App() {
 
-  const recipes = useSelector((state)=>state.filterRecipes)
+  // const recipes = useSelector((state)=>state.filterRecipes)
   // console.log("que trae useSelector -allRecipes: ", recipes)
 
   const diets = useSelector((state)=>state.allDiets)
@@ -21,13 +20,6 @@ function App() {
   const location = useLocation();
 
   const dispatch = useDispatch();
-
-  useEffect(()=>{
-    console.log("entra a useEffect")
-    //despues de montar el componente, setear las recetas
-    dispatch(actions.addAllRecipes());
-    dispatch(actions.addAllDiets());
-  },[])
 
   const onSearch = async (value)=>{
     dispatch(actions.searchRecipes(value));
@@ -41,11 +33,7 @@ function App() {
       <div>
         <Routes>
           <Route exact path='/' element={<Landing/>} />
-          <Route exact path='/home' element=
-            {<Cards
-              recipes={recipes}
-            />} 
-          />
+          <Route exact path='/home' element={<Home/>} />
           <Route exact path='/detail/:id' element={<Detail/>} />
           <Route exact path='/form' element={<Form/>} />
         </Routes>

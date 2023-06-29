@@ -13,6 +13,7 @@ export default function Form(props){
     const diets = useSelector((state)=>state.allDiets)
     // console.log("que trae useSelector -allDiets: ", diets)
 
+    //?----- ESTADOS LOCALES------
     const [form, setForm] = useState({
         title:"",
         summary:"",
@@ -111,10 +112,7 @@ export default function Form(props){
 
     //VALIDACIONES
     const validate = (form,name, value) =>{
-        // console.log("que trae error: ", error)
-        // console.log("que trae form: ", form)
-        // console.log("que trae name: ", name)
-        // console.log("que trae value: ", value)
+
         if(name==='title'){
             if(/[0-9]/.test(form.title)){
                 // console.log("entra valida title con error")
@@ -172,78 +170,84 @@ export default function Form(props){
         <div>
             <h1>Cargar Nueva Receta</h1>
             <form onSubmit={submitHandler}>
-                <div>
-                    <label>Nombre del Plato: </label>
-                    <input 
-                        name="title" 
-                        type="text" 
-                        value ={form.title}
-                        onChange={handleChange} />
-                    {error.title && <p>{error.title}</p>}
-                </div>
-                <div>
-                    <label>Resumen: </label>
-                    <textarea
-                        name="summary" 
-                        // type="text" 
-                        value ={form.summary}
-                        onChange={handleChange}
-                    ></textarea>
-                </div>
-                <div>
-                    <label>Comida Saludable: </label>
-                    <input 
-                        name="healthScore" 
-                        type="text" 
-                        value={form.healthScore}
-                        onChange={handleChange} />
-                        
-                        {error.healthScore && <p>{error.healthScore}</p>}
-                </div>
-                <div>
-                    <label>Imagen:</label>
-                    <input
-                        name="image"
-                        value={form.image}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className={style.steps}>
-                    <h3>Paso a Paso:</h3>
+            <div className={style.containerForm}>
+                <div className={style.leftForm}>
                     <div>
-                        <label>Ingrese los pasos separados por comas:</label><br/>
+                        <label>Nombre del Plato: </label><br/>
+                        <input 
+                            name="title" 
+                            type="text" 
+                            value ={form.title}
+                            onChange={handleChange} />
+                        {error.title && <p>{error.title}</p>}
+                    </div>
+                    <div>
+                        <label>Resumen: </label><br/>
                         <textarea
-                            name="steps"
-                            value={paso}
+                            rows="10" cols="50"
+                            name="summary" 
+                            value ={form.summary}
                             onChange={handleChange}
-                        ></textarea><br/>
-                        {/* <button>cargar paso</button> */}
+                        ></textarea>
                     </div>
-                    <label>Pasos creados</label>
                     <div>
-                        {form.steps?.map((step,index)=><p key={index}>{step.number}: {step.step}</p>)}
+                        <label>Comida Saludable: </label><br/>
+                        <input 
+                            name="healthScore" 
+                            type="number" 
+                            value={form.healthScore}
+                            onChange={handleChange} />
+                            
+                            {error.healthScore && <p>{error.healthScore}</p>}
+                    </div>
+                    <div>
+                        <label>Imagen:</label><br/>
+                        <input
+                            name="image"
+                            value={form.image}
+                            onChange={handleChange}
+                        />
                     </div>
                 </div>
-                <div className={style.diets}>
-                    <h3>Seleccione los tipos de dietas:</h3>
-                    <div>
-                        <select name='selectDiet' onChange={handleChange}>
-                            <option selected disabled value="predefinido">--Seleccione dietas--</option>
-                            {
-                                diets?.map((diet,index)=>(
-                                <option key={index} value={diet.name}>{diet.name}</option>
+                <div className={style.rightForm}>
+                    <div className={style.steps}>
+                        <h3>Paso a Paso:</h3>
+                        <div>
+                            <label>Ingrese los pasos separados por comas:</label><br/>
+                            <textarea
+                                rows="10" cols="50"
+                                name="steps"
+                                value={paso}
+                                onChange={handleChange}
+                            ></textarea><br/>
+                        </div>
+                        <label>Pasos creados</label>
+                        <div>
+                            {form.steps?.map((step,index)=><p key={index}>{step.number}: {step.step}</p>)}
+                        </div>
+                    </div>
+                    <div className={style.diets}>
+                        <h3>Seleccione los tipos de dietas:</h3>
+                        <div>
+                            <select name='selectDiet' onChange={handleChange}>
+                                <option selected disabled value="predefinido">--Seleccione dietas--</option>
+                                {
+                                    diets?.map((diet,index)=>(
+                                    <option key={index} value={diet.name}>{diet.name}</option>
+                                    ))
+                                }
+                            </select>
+                        </div>
+                        <div className={style.dietsContainer}>
+                            {   dieta?.map((diet)=>(
+                                    <p key={diet.id}>{diet.name}</p>
                                 ))
                             }
-                        </select>
+                        </div>
+                        {error.diets && <p>{error.diets}</p>}
                     </div>
-                    <div className={style.dietsContainer}>
-                        {   dieta?.map((diet)=>(
-                                <p key={diet.id}>{diet.name}</p>
-                            ))
-                        }
-                    </div>
-                    {error.diets && <p>{error.diets}</p>}
                 </div>
+            </div>
 
                 <button disabled={!estadoError} type="submit">SUBMIT</button>
             </form>

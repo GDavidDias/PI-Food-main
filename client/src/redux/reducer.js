@@ -12,7 +12,7 @@ const reducer = (state=initialState, action)=>{
     // console.log("que trae action -allRecipes: ", action);
     switch (action.type) {
         case ADD_ALL:
-            console.log("que trae payload, luego de ADD_ALL: ", action.payload)
+            //console.log("que trae payload, luego de ADD_ALL: ", action.payload)
             return{
                 ...state,
                 allRecipes: action.payload,
