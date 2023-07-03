@@ -10,7 +10,7 @@ export default function Form(props){
 
     const navigate = useNavigate();
 
-    const diets = useSelector((state)=>state.allDiets)
+    const dietsList = useSelector((state)=>state.allDiets)
     // console.log("que trae useSelector -allDiets: ", diets)
 
     //?----- ESTADOS LOCALES------
@@ -42,7 +42,10 @@ export default function Form(props){
         setEstadoError(allPropVacias(error)&&!anyPropVacias(form))
         // console.log("como esta error: ",error)
         console.log("que trae estadoError: ",estadoError)
-    },[error],[form])
+        console.log("que trae estado form: ", form)
+        console.log("que trae estado error: ", error)
+        console.log("que trae estado dieta: ", dieta)
+    },[error],[form],[dieta])
 
     const allPropVacias = (obj)=>{
         for (let propiedad in obj){
@@ -80,17 +83,33 @@ export default function Form(props){
 
         if(name==='selectDiet'){
             if(!dieta.some((obj)=>obj.id === selectedIndex)){
-                //setDieta({...dieta, id:selectedIndex,name:value})
-                dieta.push({id:selectedIndex,name:value});
-                form.diets.push(selectedIndex);
+                const objdiet = {
+                    id:selectedIndex,
+                    name:value
+                }
+                //?MODIFICO EL ESTADO DE DIETA, CON NUEVA DIETA
+                setDieta([...dieta, {id:selectedIndex,name:value}])
+                //dieta.push({id:selectedIndex,name:value});
+                //form.diets.push(selectedIndex);
+                //?--MODIFICO ESTADO DE FORM
+                //?--copio el estado actual del form
+                const formActual = {...form};
+                //?--copio el arreglo de diets y agrego nueva dieta
+                const arregloDietsForm =[...formActual.diets, selectedIndex];
+                //?--actualizo el arreglo de dietas en el form actual
+                formActual.diets = arregloDietsForm;
+                //?--seteo el estado local de form para actualizarlo
+                setForm(formActual);
+
                 setError({...error,diets:""})
             }else{
-                setError({...error,diets:"No se pueden repetir dietas"})
+                // setError({...error,diets:"No se pueden repetir dietas"})
             }
             // console.log("que trae estado dieta: ", dieta)
         }
-        console.log("que trae estado form: ", form)
-        console.log("que trae estado error: ", error)
+        // console.log("que trae estado form: ", form)
+        // console.log("que trae estado error: ", error)
+        // console.log("que trae estado dieta: ", dieta)
     };
 
 
@@ -163,8 +182,18 @@ export default function Form(props){
             healthScore:"",
             diets:""
         });
-
     };
+
+    const onDeleteDiets = ()=>{
+        //PRESIONA EL BOTON BORRAR DIETAS
+        if(dieta.length!=0){
+            setDieta([]);
+            setForm({
+                ...form,
+                diets:[]
+            })
+        }
+    }
 
     return(
         <div>
@@ -172,16 +201,31 @@ export default function Form(props){
             <form onSubmit={submitHandler}>
             <div className={style.containerForm}>
                 <div className={style.leftForm}>
-                    <div>
-                        <label>Nombre del Plato: </label><br/>
-                        <input 
-                            name="title" 
-                            type="text" 
-                            value ={form.title}
-                            onChange={handleChange} />
-                        {error.title && <p>{error.title}</p>}
+                    <div className={style.platoContainer}>
+                        <div className={style.platoNombre}>
+                            <label>Nombre del Plato: </label><br/>
+                            <input 
+                                name="title" 
+                                type="text" 
+                                value ={form.title}
+                                onChange={handleChange} />
+                        </div>
+                        <div className={style.msgError}>
+                            {error.title && <p>{error.title}</p>}
+                        </div>
                     </div>
-                    <div>
+                    <div className={style.healtContainer}>
+                        <div className={style.healtNumber}>
+                            <label>Comida Saludable: </label><br/>
+                            <input 
+                                name="healthScore" 
+                                type="number" 
+                                value={form.healthScore}
+                                onChange={handleChange} />
+                        </div>
+                        <div className={style.msgError}>{error.healthScore && <p>{error.healthScore}</p>}</div>
+                    </div>
+                    <div className={style.resumenContainer}>
                         <label>Resumen: </label><br/>
                         <textarea
                             rows="10" cols="50"
@@ -190,53 +234,57 @@ export default function Form(props){
                             onChange={handleChange}
                         ></textarea>
                     </div>
-                    <div>
-                        <label>Comida Saludable: </label><br/>
-                        <input 
-                            name="healthScore" 
-                            type="number" 
-                            value={form.healthScore}
-                            onChange={handleChange} />
-                            
-                            {error.healthScore && <p>{error.healthScore}</p>}
-                    </div>
-                    <div>
-                        <label>Imagen:</label><br/>
-                        <input
-                            name="image"
-                            value={form.image}
-                            onChange={handleChange}
-                        />
+                    <div className={style.imgContainer}>
+                        <div>
+                            <label>Imagen:</label><br/>
+                            <input
+                                name="image"
+                                value={form.image}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className={style.cuadroImagen}>
+                            {form.image && <img src={form.image} alt="imagen"/>}
+                        </div>
                     </div>
                 </div>
                 <div className={style.rightForm}>
                     <div className={style.steps}>
-                        <h3>Paso a Paso:</h3>
+                        <label>Paso a Paso:</label>
                         <div>
-                            <label>Ingrese los pasos separados por comas:</label><br/>
+                            <label>Ingrese los pasos separados por comas</label><br/>
                             <textarea
-                                rows="10" cols="50"
+                                rows="8" cols="50"
                                 name="steps"
                                 value={paso}
                                 onChange={handleChange}
                             ></textarea><br/>
                         </div>
                         <label>Pasos creados</label>
-                        <div>
+                        <div className={style.pasosCreados}>
                             {form.steps?.map((step,index)=><p key={index}>{step.number}: {step.step}</p>)}
                         </div>
                     </div>
                     <div className={style.diets}>
-                        <h3>Seleccione los tipos de dietas:</h3>
-                        <div>
-                            <select name='selectDiet' onChange={handleChange}>
-                                <option selected disabled value="predefinido">--Seleccione dietas--</option>
-                                {
-                                    diets?.map((diet,index)=>(
-                                    <option key={index} value={diet.name}>{diet.name}</option>
-                                    ))
-                                }
-                            </select>
+                        <div className={style.selectDiets}>
+                            <label>Seleccione dietas: </label>
+                            <div>
+                                <select name='selectDiet' onChange={handleChange}>
+                                    <option selected disabled value="predefinido">--Seleccione dietas--</option>
+                                    {
+                                        dietsList?.map((diet,index)=>(
+                                        <option key={index} value={diet.name}>{diet.name}</option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                            <div className={style.buttonDiets}>
+                                <button 
+                                    type="button"
+                                    disabled={dieta.length===0 ?true :false}
+                                    onClick={()=>onDeleteDiets()}
+                                >Borrar Dietas</button>
+                            </div>
                         </div>
                         <div className={style.dietsContainer}>
                             {   dieta?.map((diet)=>(
@@ -244,7 +292,7 @@ export default function Form(props){
                                 ))
                             }
                         </div>
-                        {error.diets && <p>{error.diets}</p>}
+                        <div className={style.msgError}>{error.diets && <p>{error.diets}</p>}</div>
                     </div>
                 </div>
             </div>

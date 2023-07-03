@@ -1,6 +1,70 @@
 .divSearch{
-    /* display: flex;
-    /* flex-Wrap: wrap; */
-    /* align-items:center;
-    justify-content:center;  */ 
+    display: flex;
+    justify-content: center;
+    flex-direction: row-reverse;
+    gap: 30px;
+    border: 1px solid black;
+    padding-bottom: 10px;
+}
+.navSearch{
+    display: flex; 
+    justify-content:center;
+    flex-direction: column;
+}
+.navSearch p{
+    margin: 5px;
+    color:#346fee;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:bold;
+}
+.navSearch input{
+    margin-bottom: 10px;
+}
+.filterContainer{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+}
+.filterContainer p{
+    margin-top: 5px;
+    margin-bottom: 0px;
+    color:#346fee;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:bold;
+}
+.filterContainer select{
+    margin-bottom: 10px;
+    margin-top: 0px;
+}
+
+.navSearch button{
+    box-shadow: 0px 1px 0px 0px #1c1b18;
+	background:linear-gradient(to bottom, #fdf6e7 5%, #e7eefd 100%);
+	background-color:#fdf6e7;
+	border-radius:10px;
+	border:2px solid #1f271b;
+	display:inline-block;
+	cursor:pointer;
+	color:#346fee;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:bold;
+	padding:5px 16px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+    margin-left: 10px;
+}
+.navSearch button:hover{
+    background:linear-gradient(to bottom, #e7eefd 5%, #fdf6e7 100%);
+	background-color:#e7eefd;
+}
+.navSearch button:active{
+    position:relative;
+	top:1px;
+}
+.navSearch a:link{
+    text-decoration: none;
 }

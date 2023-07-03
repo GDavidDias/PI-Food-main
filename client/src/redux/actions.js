@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADD_ALL , SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER} from "./types";
+import { ADD_ALL , SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL} from "./types";
   const URL = 'http://localhost:3001';
 
 //ACTION -> addAllRecipes
@@ -58,3 +58,31 @@ export const filterCard = (filter)=>{
     payload:filter
   }
 };
+
+export const setPageItemsGlobal = (pageItems)=>{
+  return{
+    type:SET_PAGEITEMS_GLOBAL,
+    payload:pageItems
+  }
+}
+
+export const setFirstIndexGlobal =(firstIndex) =>{
+  return{
+    type:SET_FIRSTINDEX_GLOBAL,
+    payload:firstIndex
+  }
+}
+
+export const setCurrentPageGlobal =(currentPage)=>{
+  return{
+    type:SET_CURRENTPAGE_GLOBAL,
+    payload:currentPage
+  }
+}
+
+export const setRecipeSearchGlobal =(recipeSearch)=>{
+  return{
+    type:SET_RECIPESEARCH_GLOBAL,
+    payload:recipeSearch
+  }
+}

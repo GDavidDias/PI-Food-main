@@ -1,0 +1,46 @@
+.container{
+	content: "";
+	/* position: absolute; */
+	background-image: url("../../imagenes/fondo-food2.png") ;
+	background-size: cover;
+	background-position: center;
+}
+
+.navPage{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 5px;
+	align-items: center;
+}
+.navPage input{
+    width: 50px;
+}
+
+.navPage button{
+    box-shadow: 0px 1px 0px 0px #1c1b18;
+	background:linear-gradient(to bottom, #fdf6e7 5%, #e7eefd 100%);
+	background-color:#fdf6e7;
+	border-radius:10px;
+	border:2px solid #1f271b;
+	display:inline-block;
+	cursor:pointer;
+	color:#346fee;
+	font-family:Arial;
+	font-size:12px;
+	font-weight:bold;
+	padding:5px 10px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+}
+.navPage button:hover{
+    background:linear-gradient(to bottom, #e7eefd 5%, #fdf6e7 100%);
+	background-color:#e7eefd;
+}
+.navPage button:active{
+    position:relative;
+	top:1px;
+}
+.navPage a:link{
+    text-decoration: none;
+}

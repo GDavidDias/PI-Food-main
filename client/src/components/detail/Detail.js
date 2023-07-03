@@ -32,21 +32,21 @@ export default function Detail(props){
 
     
     return(
-        <div>
-            <div>
+        <div className={style.container}>
+            <div className={style.idHealtContainer}>
                 <h1>{recipe.title ?recipe.title :null}</h1>
                 <h3>ID | {recipe.id ?recipe.id :null}</h3>
-                <h3>HEALT | {recipe.healthScore ?recipe.healthScore :null}</h3>
-            <div>
+                <h3>HEALT | ❤️{recipe.healthScore ?recipe.healthScore :null}</h3>
+            </div>
+            <div className={style.descriptionContainer}>
                 <h3>Descripcion:</h3>
                 <div id="ContenedorDescripcion"></div>
                 
             </div>
-            </div>
             <div>
                 <img src={recipe.image ?recipe.image :null} alt={recipe.title}/>
             </div>
-            <div>
+            <div className={style.tiposDietaContainer}>
                 <h3>Tipos de Dieta:</h3>
                 <h3>
                     {
@@ -54,7 +54,7 @@ export default function Detail(props){
                     }
                 </h3>
             </div>
-            <div>
+            <div className={style.pasosContainer}>
                 <h3>PASO A PASO:</h3>
                 <ul>{
                     recipe.steps?.map((step,index)=>(

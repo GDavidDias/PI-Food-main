@@ -1,10 +1,16 @@
-import { ADD_ALL, SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER } from "./types";
+import { ADD_ALL, SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL} from "./types";
 
 const initialState = {
     allRecipes:[],
     allDiets:[],
     filterRecipes:[],
-    error:"Barra de busqueda"
+    diet:"",
+    order:"",
+    recipeSearch:"",
+    error:"Barra de busqueda",
+    pageItems:9,
+    firstIndex:0,
+    currentPage:0
 }
 
 const reducer = (state=initialState, action)=>{
@@ -13,11 +19,18 @@ const reducer = (state=initialState, action)=>{
     switch (action.type) {
         case ADD_ALL:
             //console.log("que trae payload, luego de ADD_ALL: ", action.payload)
-            return{
-                ...state,
-                allRecipes: action.payload,
-                filterRecipes: action.payload
-            };
+            //?SI NO HAY FILTRO Y ORDEN APLICADO, ES LA PRIMERA VEZ
+            if(state.diet==="" && state.order===""&&state.recipeSearch===""){
+                return{
+                    ...state,
+                    allRecipes: action.payload,
+                    filterRecipes: action.payload
+                }
+            }else{
+                //?SI HAY FILTRO, ORDEN O BUSQUEDA APLICADO, RETORNO RECIPES FILTRADO
+                return{...state}
+            }
+
         case SEARCH_RECIPES:
             return{
                 ...state,
@@ -37,6 +50,7 @@ const reducer = (state=initialState, action)=>{
                 allDiets:action.payload
             };
         case ORDER:
+            console.log("ingresa a order -REDUCER: ", action.payload);
             const orderAllRecipes = [...state.filterRecipes];
             if(orderAllRecipes.length>1){
                 if(action.payload==='A'){
@@ -63,11 +77,12 @@ const reducer = (state=initialState, action)=>{
             }
             return{
                 ...state,
+                order:action.payload,
                 filterRecipes:orderAllRecipes
             };
         case FILTER:
+            console.log("ingresa a filter -REDUCER: ", action.payload);
             let filterAllRecipes=[];
-            console.log("ingresa a filter: ", action.payload);
             if(action.payload==='all'){
                 filterAllRecipes=[...state.allRecipes];
             }else if(action.payload==='API'){
@@ -77,9 +92,43 @@ const reducer = (state=initialState, action)=>{
             }else{
                 filterAllRecipes=state.allRecipes.filter((recipe)=>recipe.diets.includes(action.payload));
             }
+            console.log(">> > cuantos registros hay luego del filtro: ", filterAllRecipes.length)
+            if(filterAllRecipes.length===0){
+                return{
+                    ...state,
+                    error:"No hay recetas que cumplan con este filtro",
+                }
+            }else{
+                return{
+                    ...state,
+                    diet:action.payload,
+                    filterRecipes:filterAllRecipes,
+                    error:"Recetas encontradas"
+                }
+            };
+        case SET_PAGEITEMS_GLOBAL:
+            console.log("Ingresa a SET_PAGEITEMS_GLOBAL - REDUCER > action.payload: ", action.payload)
             return{
                 ...state,
-                filterRecipes:filterAllRecipes,
+                pageItems:action.payload
+            };
+        case SET_FIRSTINDEX_GLOBAL:
+            console.log("ingresa a SET_FIRSTINDEX_GLOBAL - REDUCER > action.payload: ", action.payload)
+            return{
+                ...state,
+                firstIndex:action.payload
+            };
+        case SET_CURRENTPAGE_GLOBAL:
+            console.log("ingrea a SET_CURRENTPAGE_GLOBAL - REDUCER > action.payload: ", action.payload)
+            return{
+                ...state,
+                currentPage:action.payload
+            };
+        case SET_RECIPESEARCH_GLOBAL:
+            console.log("Ingresa a SET_RECIPESEARCH_GLOBAL - REDUCER >action.payload: ", action.payload)
+            return{
+                ...state,
+                recipeSearch:action.payload
             }
         default: return {...state};
     };
