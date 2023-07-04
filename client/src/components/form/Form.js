@@ -1,14 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
+import * as actions from "../../redux/actions";
 import style from "./Form.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { addAllRecipes } from "../../redux/actions";
 import { useNavigate } from "react-router-dom";
 
 
 export default function Form(props){
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const dietsList = useSelector((state)=>state.allDiets)
     // console.log("que trae useSelector -allDiets: ", diets)
@@ -155,33 +156,39 @@ export default function Form(props){
         }
     };
 
-    const dispatch = useDispatch();
 
     const submitHandler = async(event)=>{
         event.preventDefault();
         await axios.post("http://localhost:3001/recipes/",form)
-        .then(res=>{
+        .then(async res=>{
+            //?REINICIO ESTADO GLOBAL Y BORRO FILTROS Y ORDEN
+            await dispatch(actions.resetGlobal());
+            await dispatch(actions.addAllRecipes());
+            await dispatch(actions.addAllDiets());            
+            //?REINICIO ESTADO LOCAL
+            setForm({
+                title:"",
+                summary:"",
+                healthScore:"",
+                steps:[],
+                image:"",
+                diets:[],
+            });
+            setPasos("");
+            setDieta([]);
+            setError({
+                title:"",
+                healthScore:"",
+                diets:""
+            });
+
             alert(res.data)
+
             navigate('/home');
         })
         .catch(err=>alert(err))
 
-        dispatch(addAllRecipes());
-        setForm({
-            title:"",
-            summary:"",
-            healthScore:"",
-            steps:[],
-            image:"",
-            diets:[],
-        });
-        setPasos("");
-        setDieta([]);
-        setError({
-            title:"",
-            healthScore:"",
-            diets:""
-        });
+
     };
 
     const onDeleteDiets = ()=>{

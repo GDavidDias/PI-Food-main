@@ -52,3 +52,21 @@
 .pasosContainer h3{
     text-align: center;
 }
+
+.imageContainer img{
+    margin-top: 10px;
+    box-shadow: 0 0 10px black;
+}
+
+.deleteUpdateContainer{
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-left: 30%;
+    margin-right: 30%;
+    padding: 5px;
+    background-color: rgba(248, 208, 99, 0.9);
+    margin-bottom: 10px;
+    display:flex;
+    justify-content: center;
+    gap: 10px;
+}

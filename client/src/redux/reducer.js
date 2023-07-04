@@ -1,4 +1,4 @@
-import { ADD_ALL, SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL} from "./types";
+import { ADD_ALL, SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL, RESET} from "./types";
 
 const initialState = {
     allRecipes:[],
@@ -17,6 +17,13 @@ const reducer = (state=initialState, action)=>{
     // console.log("entra al reducer -allRecipes: ", state.allRecipes);
     // console.log("que trae action -allRecipes: ", action);
     switch (action.type) {
+        case RESET:
+            return{
+                ...state,
+                diet:"",
+                order:"",
+                recipeSearch:""
+            };
         case ADD_ALL:
             //console.log("que trae payload, luego de ADD_ALL: ", action.payload)
             //?SI NO HAY FILTRO Y ORDEN APLICADO, ES LA PRIMERA VEZ
@@ -129,7 +136,8 @@ const reducer = (state=initialState, action)=>{
             return{
                 ...state,
                 recipeSearch:action.payload
-            }
+            };
+
         default: return {...state};
     };
     

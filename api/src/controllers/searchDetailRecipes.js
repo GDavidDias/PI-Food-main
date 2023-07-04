@@ -12,6 +12,7 @@ require('dotenv').config();
 const {API_URL, API_KEY, API_LOCAL_HOST, IS_API_LOCAL} = process.env;
 const { Recipe, Diet, Op } = require("../db.js");
 
+//!------------------BUSCA DETALLE DE RECETA-----------------
 const searchDetailRecipes = async function(req,res){
     console.log("ingresa a detailRecipes")
     let detailRecipe = {}
@@ -20,13 +21,13 @@ const searchDetailRecipes = async function(req,res){
     //console.log("tipo dato: ",!isNaN(idRecipe)); 
     if(!idRecipe) return res.status(401).send("Falta enviar idRecipe");
     try{
+        //?CONSULTO SI LA CLAVE PRINCIPAL ES NUMERO => API o UUID => BDD, y consulto respectivamente.
         if(!isNaN(idRecipe)){
-            //Si idRecipe es un numero
+            //?SI idRecipe ES NUMERO ->CONSULTO EN API
             console.log("busca en API")
             let respApi
             if(IS_API_LOCAL === 'true'){
                 //BUSCA EN API LOCAL
-                //console.log(`${API_LOCAL_HOST}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`);
                 console.log("busco en api local")
                 respApi = await axios (`${API_LOCAL_HOST}/${idRecipe}/information?apiKey=${API_KEY}&addRecipeInformation=true`)
                 //console.log("axios trae: ",respApi.data);
@@ -40,11 +41,14 @@ const searchDetailRecipes = async function(req,res){
             if(respApi){
                 const {id,title,image,summary,healthScore,analyzedInstructions,diets} = respApi.data;
                 //console.log("que trae analyzedInstructions.steps: ",analyzedInstructions[0].steps)
-                //const onlySteps = analyzedInstructions.steps
-                //console.log("que trae analyzedInstructions: ", analyzedInstructions.length);
-                //  let stepresponse
-                //  if (analyzedInstructions.length!==0) stepresponse= analyzedInstructions[0].steps
-                //  else stepresponse=[];
+                //analyzedInstructions -> SON LOS PASO A PASO DE LA RECETA
+                //                     -> ES UN ARREGLO CON UN OBJETO, CON DOS PROPIEDADES -> "name" y "steps": aqui estan los pasos
+                // "analyzedInstructions": [
+                //     {
+                //        "name": "",
+                //        "steps": [{},{}]
+                //     }
+                //  ],
 
                 detailRecipe = {id,
                                 title,
@@ -61,7 +65,7 @@ const searchDetailRecipes = async function(req,res){
             }
 
         }else{
-            //BUSCA EN BD
+            //?Como idRecipe no es NUMERO -> BUSCA EN BD
             console.log("Busca en BD")
             const respBd = await Recipe.findByPk(idRecipe,{
                 include: Diet,
@@ -69,7 +73,7 @@ const searchDetailRecipes = async function(req,res){
             //console.log("que trae respBd: ",respBd)
             if(respBd){
                 const {id,title,image,summary,healthScore,steps,diets} = respBd;
-                console.log("Como viene diets: ",diets?.map(diet=>diet.name))
+                //console.log("Como viene diets: ",diets?.map(diet=>diet.name))
                 detailRecipe = {id,
                                 title,
                                 image,

@@ -1,8 +1,11 @@
 import axios from "axios";
+import * as actions from "../../redux/actions";
 import { useEffect, useState } from "react";
 import style from "./Detail.module.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 const URL = 'http://localhost:3001';
+
 
 export default function Detail(props){
     console.log("entra en Detail - que trae props: ", props)
@@ -10,6 +13,22 @@ export default function Detail(props){
     console.log("Que viene en id: ", id);
 
     const [recipe, setRecipe] = useState({});
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const onDeleteRecipe = async(id)=>{
+        await axios.delete(`http://localhost:3001/delete/${id}`)
+        .then(async res=>{
+            //?REINICIO ESTADO GLOBAL Y BORRO FILTROS Y ORDEN
+            await dispatch(actions.resetGlobal());
+            await dispatch(actions.addAllRecipes());
+            await dispatch(actions.addAllDiets());
+            alert(res.data)
+            navigate('/home');
+        })
+        .catch(err=>alert(err))
+    };
 
     useEffect(async ()=>{
         try{
@@ -28,7 +47,7 @@ export default function Detail(props){
     useEffect(()=>{
         document.getElementById('ContenedorDescripcion').innerHTML=recipe.summary;
     },[recipe])
-    console.log("como setea recipes en Detail: ", recipe);
+    //console.log("como setea recipes en Detail: ", recipe);
 
     
     return(
@@ -43,7 +62,7 @@ export default function Detail(props){
                 <div id="ContenedorDescripcion"></div>
                 
             </div>
-            <div>
+            <div className={style.imageContainer}>
                 <img src={recipe.image ?recipe.image :null} alt={recipe.title}/>
             </div>
             <div className={style.tiposDietaContainer}>
@@ -65,6 +84,22 @@ export default function Detail(props){
                     )) 
                 }
                 </ul>
+            </div>
+            <div className={style.deleteUpdateContainer}>
+                <div>
+                    <button
+                        type="button"
+                        disabled={isNaN(id) ?false :true}
+                        onClick={()=>onDeleteRecipe(id)}
+                    >Eliminar Receta</button>
+                </div>
+                <div>
+                    <button
+                        type="button"
+                        disabled={isNaN(id) ?false :true}
+                        onClick={()=>onDeleteRecipe(id)}
+                    >Editar Receta</button>
+                </div>
             </div>
         </div>
     )

@@ -13,14 +13,15 @@ const {API_URL, API_KEY, API_LOCAL_HOST, IS_API_LOCAL} = process.env;
 
 const { Diet } = require("../db.js");
 
+//!------------------ARMA LISTA DE DIETAS-----------------
 const listDiets = async function(req,res){
     console.log("ingresa a listDiets")
     
     //const {idRecipe} = req.params;
     //console.log("parametro recibido: ",idRecipe);
     try{
-        console.log("ingresa a try")
-        console.log(IS_API_LOCAL)
+        // console.log("ingresa a try")
+        // console.log(IS_API_LOCAL)
         let resp;
         
         if(IS_API_LOCAL==='true'){
@@ -35,8 +36,9 @@ const listDiets = async function(req,res){
         if(resp){
             let listrecipes = resp.data.results;
             let listadieta =[]
+            //?RECORRO LAS RECETAS
             listrecipes.map((recipe)=>{
-                //RECORRO LA DIETA DE CADA RECETA, PORQUE ES UN ARREGLO
+                //?RECORRO LA DIETA DE CADA RECETA, PORQUE ES UN ARREGLO
                 //console.log("recetas y dietas: ",recipe.diets);
                 recipe.diets.forEach(diet => {
                     if(!listadieta.includes(diet)){
@@ -49,12 +51,12 @@ const listDiets = async function(req,res){
                 return {name:diet}
             });
             
-            console.log("antes de crear")
-            console.log(listFilter);
+            // console.log("antes de crear")
+            // console.log(listFilter);
 
-            //Consulto si no existen dietas cargadas y las cargo
+            //?CUENTO SI HAY DIETAS CARGADAS, SINO LAS CARGO.
             let cantidadregistros = await Diet.count();
-            console.log("que trae diets: ",cantidadregistros);
+            // console.log("que trae diets: ",cantidadregistros);
             let allDiets
             if(cantidadregistros===0){
                 allDiets = await Diet.bulkCreate(listFilter);
