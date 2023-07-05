@@ -17,6 +17,7 @@ export default function Detail(props){
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    //!Funcion para ELIMINAR Receta
     const onDeleteRecipe = async(id)=>{
         await axios.delete(`http://localhost:3001/delete/${id}`)
         .then(async res=>{
@@ -30,7 +31,7 @@ export default function Detail(props){
         .catch(err=>alert(err))
     };
 
-    //!prueba para editar una receta llamando a form
+    //!Funcion para EDITAR una receta llamando a form
     const onEditRecipe = (id)=>{
         console.log("aqui editamos la receta")
         dispatch(actions.setUpdId(id));

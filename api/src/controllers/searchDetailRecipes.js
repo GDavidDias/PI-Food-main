@@ -70,7 +70,7 @@ const searchDetailRecipes = async function(req,res){
             const respBd = await Recipe.findByPk(idRecipe,{
                 include: Diet,
             });
-            //console.log("que trae respBd: ",respBd)
+            //console.log("que trae respBd: ",respBd) 
             if(respBd){
                 const {id,title,image,summary,healthScore,steps,diets} = respBd;
                 //console.log("Como viene diets: ",diets?.map(diet=>diet.name))

@@ -13,6 +13,7 @@ export default function Landing(prop){
             </button>
             <br></br>
             <img className ={style.imagen} src={useImg} alt="imagen-comidas"/>
+            <p>Aplicacion creada por guillermo david dias para el proyecto individual - carrera FullStack - Henry</p>
         </div>
     )
 };

@@ -44,6 +44,7 @@ function Home(){
     };
 
     const handleChange = (event) =>{
+        //?AL PRESIONAR CAMBIO ITEMS POR PAGINA
         //console.log("entra a handleChange")
         //?SI CAMBIA CANTIDAD DE ITEMS POR PAGINA
         //?REGRESO A LA PRIMER PAGINA X NUEVA PAGINACION
@@ -62,6 +63,7 @@ function Home(){
     //?PAGINA Y PAGINO DE NUEVO
     useEffect(async()=>{
         if(currentPageGlobal===0){
+            console.log("***Entra use Effect Pagina de nuevo - Cambio en CurrentPageGlobal: ", pageItemsGlobal);
             setCurrentPage(0);
             await setItems([...recipes].splice(firstIndexGlobal,pageItemsGlobal));
         } 

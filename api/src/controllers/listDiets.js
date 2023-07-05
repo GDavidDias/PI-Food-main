@@ -32,7 +32,7 @@ const listDiets = async function(req,res){
             resp = await axios (`${API_URL}/complexSearch?addRecipeInformation=true&number=100&apiKey=${API_KEY}`);
         }
 
-        //console.log("axios trae: ",resp.data.results);
+        //console.log("axios trae en listDiets: ",resp.data.results);
         if(resp){
             let listrecipes = resp.data.results;
             let listadieta =[]
