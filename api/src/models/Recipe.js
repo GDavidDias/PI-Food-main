@@ -16,7 +16,8 @@ module.exports = (sequelize) => {
     },
     image:{
       type:DataTypes.STRING,
-      allowNull:false
+      defaultValue:"https://cdn-icons-png.flaticon.com/256/1830/1830839.png"
+      
     },
     summary:{
       type:DataTypes.TEXT,
@@ -26,10 +27,6 @@ module.exports = (sequelize) => {
       type:DataTypes.INTEGER,
       allowNull:false
     },
-    // sourceUrl:{
-    //   type:DataTypes.STRING,
-    //   allowNull:false
-    // },
     steps:{
       type:DataTypes.JSON,
       allowNull:false,

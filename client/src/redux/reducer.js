@@ -1,4 +1,4 @@
-import { ADD_ALL, SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL, RESET} from "./types";
+import { ADD_ALL, SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL, RESET, SET_UPD_ID} from "./types";
 
 const initialState = {
     allRecipes:[],
@@ -10,7 +10,8 @@ const initialState = {
     error:"Barra de busqueda",
     pageItems:9,
     firstIndex:0,
-    currentPage:0
+    currentPage:0,
+    updId:"" //!variable de id para update
 }
 
 const reducer = (state=initialState, action)=>{
@@ -137,7 +138,12 @@ const reducer = (state=initialState, action)=>{
                 ...state,
                 recipeSearch:action.payload
             };
-
+        case SET_UPD_ID:
+            console.log("ingreso a SET_UPD_ID - REDUCER > action.payload", action.payload);
+            return{
+                ...state,
+                updId:action.payload
+            }
         default: return {...state};
     };
     

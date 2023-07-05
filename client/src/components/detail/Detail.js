@@ -30,6 +30,13 @@ export default function Detail(props){
         .catch(err=>alert(err))
     };
 
+    //!prueba para editar una receta llamando a form
+    const onEditRecipe = (id)=>{
+        console.log("aqui editamos la receta")
+        dispatch(actions.setUpdId(id));
+        navigate('/form');
+    }
+
     useEffect(async ()=>{
         try{
             const {data} = await axios.get(`${URL}/recipes/${id}`);
@@ -37,7 +44,7 @@ export default function Detail(props){
             if(data.id){
                 setRecipe(data);
             }else{
-                window.alert('No hay presonajes con ese id')
+                window.alert('No hay recetas con ese id')
             }
         }catch(error){
             console.log("error en busqueda de recetas por id")
@@ -97,7 +104,7 @@ export default function Detail(props){
                     <button
                         type="button"
                         disabled={isNaN(id) ?false :true}
-                        onClick={()=>onDeleteRecipe(id)}
+                        onClick={()=>onEditRecipe(id)}
                     >Editar Receta</button>
                 </div>
             </div>

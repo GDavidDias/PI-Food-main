@@ -4,6 +4,7 @@ import style from "./Form.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const URL = 'http://localhost:3001';
 
 
 export default function Form(props){
@@ -11,8 +12,10 @@ export default function Form(props){
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const dietsList = useSelector((state)=>state.allDiets)
+    //?---ESTADOS GLOBALES---
+    const dietsList = useSelector((state)=>state.allDiets);
     // console.log("que trae useSelector -allDiets: ", diets)
+    const idUpdate = useSelector((state)=>state.updId);
 
     //?----- ESTADOS LOCALES------
     const [form, setForm] = useState({
@@ -21,13 +24,14 @@ export default function Form(props){
         healthScore:"",
         steps:[],
         image:"",
-        diets:[],
+        diets:[], //
     });
 
     const [paso,setPasos] = useState("");
 
     const [estadoError, setEstadoError] = useState(true)
 
+    //*se arreglo de objetos -> {id,name}
     const [dieta, setDieta] = useState([])
 
     const [error, setError] = useState({
@@ -39,14 +43,18 @@ export default function Form(props){
     
 
     useEffect(()=>{
-        console.log("que trae anyPropVacias: ", anyPropVacias(form))
-        setEstadoError(allPropVacias(error)&&!anyPropVacias(form))
+        //?VALIDO ESTADO DE ERROR EN TRUE, SI ALGUN CAMPO OBLIGATORIO
+        //?ESTA VACIO O SI HAY ALGUN ERROR
+        console.log("que trae anyPropVacias: ", anyPropVacias(form));
+        console.log("que trae allPropVacias: ", allPropVacias(error));
+        setEstadoError(allPropVacias(error)&&!anyPropVacias(form));
+        console.log("como setea estadoError: ", estadoError)
         // console.log("como esta error: ",error)
-        console.log("que trae estadoError: ",estadoError)
-        console.log("que trae estado form: ", form)
-        console.log("que trae estado error: ", error)
-        console.log("que trae estado dieta: ", dieta)
-    },[error],[form],[dieta])
+        // console.log("que trae estadoError: ",estadoError)
+        // console.log("que trae estado form: ", form)
+        // console.log("que trae estado error: ", error)
+        // console.log("que trae estado dieta: ", dieta)
+    },[form],[error],[dieta],[estadoError]);
 
     const allPropVacias = (obj)=>{
         for (let propiedad in obj){
@@ -57,15 +65,20 @@ export default function Form(props){
 
     const anyPropVacias = (obj)=>{
         for(let propiedad in obj){
-            if(obj[propiedad] === "" || obj[propiedad].length === 0) return true;
+            //?PORQUE IMAGEN NO ES OBLIGATORIO Y TIENE VALOR POR DEFECTO EN BD
+            if(propiedad!=="image"){
+                if(obj[propiedad] === "" || obj[propiedad].length === 0) return true;
+            }
         }
         return false;
     }
 
     const handleChange = (event) =>{
         const {name, value, selectedIndex} = event.target;
-        // console.log("que trae name: ", name)
-        // console.log("que trae value: ", value)        
+        console.log("que trae name: ", name)
+        console.log("que trae value: ", value)        
+        console.log("que trae estado error: ",estadoError)
+        console.log("que trae error: ", error);
         setForm({
             ...form,
             [name]:value
@@ -108,13 +121,13 @@ export default function Form(props){
             }
             // console.log("que trae estado dieta: ", dieta)
         }
-        // console.log("que trae estado form: ", form)
+        console.log("que trae estado form: ", form)
         // console.log("que trae estado error: ", error)
-        // console.log("que trae estado dieta: ", dieta)
+        console.log("que trae estado dieta: ", dieta)
     };
 
 
-    //FORMATEO LOS PASO A PASO PARA CREAR ARREGLO DE OBJETOS
+    //?FORMATEO LOS PASO A PASO PARA CREAR ARREGLO DE OBJETOS
     const formatStep=(step)=>{
         const inputString = step;
         const stringArreglo = inputString.split(',');
@@ -130,7 +143,7 @@ export default function Form(props){
     }
 
 
-    //VALIDACIONES
+    //?VALIDACIONES
     const validate = (form,name, value) =>{
 
         if(name==='title'){
@@ -156,43 +169,8 @@ export default function Form(props){
         }
     };
 
-
-    const submitHandler = async(event)=>{
-        event.preventDefault();
-        await axios.post("http://localhost:3001/recipes/",form)
-        .then(async res=>{
-            //?REINICIO ESTADO GLOBAL Y BORRO FILTROS Y ORDEN
-            await dispatch(actions.resetGlobal());
-            await dispatch(actions.addAllRecipes());
-            await dispatch(actions.addAllDiets());            
-            //?REINICIO ESTADO LOCAL
-            setForm({
-                title:"",
-                summary:"",
-                healthScore:"",
-                steps:[],
-                image:"",
-                diets:[],
-            });
-            setPasos("");
-            setDieta([]);
-            setError({
-                title:"",
-                healthScore:"",
-                diets:""
-            });
-
-            alert(res.data)
-
-            navigate('/home');
-        })
-        .catch(err=>alert(err))
-
-
-    };
-
     const onDeleteDiets = ()=>{
-        //PRESIONA EL BOTON BORRAR DIETAS
+        //?PRESIONA EL BOTON BORRAR DIETAS
         if(dieta.length!=0){
             setDieta([]);
             setForm({
@@ -200,13 +178,144 @@ export default function Form(props){
                 diets:[]
             })
         }
-    }
+    };
+
+    const reinicioEstados = async()=>{
+        //?REINICIO ESTADO GLOBAL Y BORRO FILTROS Y ORDEN
+        await dispatch(actions.resetGlobal());
+        await dispatch(actions.addAllRecipes());
+        await dispatch(actions.addAllDiets());            
+        //?REINICIO ESTADO LOCAL
+        setForm({
+            title:"",
+            summary:"",
+            healthScore:"",
+            steps:[],
+            image:"",
+            diets:[],
+        });
+        setPasos("");
+        setDieta([]);
+        setError({
+            title:"",
+            healthScore:"",
+            diets:""
+            });
+    };
+
+    const submitHandler = async(event)=>{
+        event.preventDefault();
+        console.log("que tiene form antes de upd o create: ", form)
+        if(idUpdate===""){
+            console.log("CREA NUEVA RECETA")
+            await axios.post("http://localhost:3001/recipes/",form)
+            .then(async res=>{
+                reinicioEstados();
+                alert(res.data)
+                navigate('/home');
+            })
+            .catch(err=>alert(err))
+        }else{
+            console.log("ACTUALIZA RECETA")
+            await axios.put(`${URL}/recipes/${idUpdate}`,form)
+            .then(async res=>{
+                reinicioEstados();
+                alert(res.data)
+                navigate('/home');
+            })
+            .catch(err=>alert(err))
+        }
+        dispatch(actions.setUpdId(""))
+    };
+
+    //!PRUEBA DE USO FORM PARA MODIFICAR RECETA
+    useEffect(async()=>{
+        console.log(">>> AL MONTAR FORM");
+        //Si variable global updId tiene un valor, se modifica
+        console.log("que trae variable global updId: ", idUpdate)
+
+        if(idUpdate!==""){
+            //?TRAIGO LOS DATOS DE RECETA
+            try{
+                const {data} = await axios.get(`${URL}/recipes/${idUpdate}`);
+                console.log("que trate data de axios: ",data);
+                if(data.id){
+                    console.log("seteo estados locales");
+                    await setForm({
+                        ...form,
+                        title: data.title,
+                        summary: data.summary,
+                        healthScore: data.healthScore,
+                        steps: data.steps,
+                        image: data.image
+                    });
+                    console.log("como queda form al setear: ", form)
+                    //?FORMATEO LOS PASOS PARA MOSTRARLOS EN TEXTAREA CON COMAS
+                    if(data.steps.length!==0){
+                        if(data.steps.length===1){
+                            const pasos = data.steps?.map(obj=> obj.step)
+                            setPasos(pasos);
+                        }else{
+                            const pasos = data.steps?.map(obj=> obj.step+",")
+                            setPasos(pasos);
+                        }
+                    }
+
+                    if(data.diets.length!==0){
+                        // setDieta(data.diets)
+                        console.log("que trae dietsList", dietsList);
+                        console.log("que trae data.diets: ", data.diets)
+                        
+                        //?CON ARREGLO GLOBAL DE DIETAS y DIETAS QUE VIENEN DE AXIOS
+                        //?-  1) ARMO LISTA Y CARGO ESTADO LOCAL DE DIETAS
+                        //?-  2) ARMO LISTA INDICE DIETAS PARA ESTADO LOCAL FORM
+                        let listdietforstate = [] //-> [{id,name},{id,name}]
+                        let listdietforform=[] //->[id,id,id]
+                        for (const diet of dietsList){
+                            if(data.diets.some((dietname)=>dietname===diet.name)){
+                                // setDieta([...dieta, {id:diet.id,name:diet.name}])
+                                listdietforform.push(diet.id);
+                                form.diets.push(diet.id);
+                                listdietforstate.push({id:diet.id,name:diet.name})
+                            }
+                        }
+                        console.log("como queda listdietforstate: ", listdietforstate)
+                        console.log("como queda listdietforform: ", listdietforform)
+
+                        await setDieta(listdietforstate);
+                        // await setForm({
+                        //     ...form,
+                        //     diets:listdietforform
+                        // });                    
+                    }
+                    
+                }
+            }catch(error){
+                console.log("error en busqueda de receta")
+            }
+            
+        }
+        console.log("como queda form: ",form)
+        
+    },[])
+
+    useEffect(()=>{
+        return()=>{
+            console.log(">>> SE DESMONTA FORM");
+            if(idUpdate!==""){
+                console.log("Seteo setUpdId en VACIO")
+                dispatch(actions.setUpdId(""));
+            } 
+        };
+    },[])
 
     return(
         <div>
             <h1>Cargar Nueva Receta</h1>
             <form onSubmit={submitHandler}>
             <div className={style.containerForm}>
+
+                {/* //?---PARTE IZQUIERDA--- */}
                 <div className={style.leftForm}>
                     <div className={style.platoContainer}>
                         <div className={style.platoNombre}>
@@ -255,6 +364,8 @@ export default function Form(props){
                         </div>
                     </div>
                 </div>
+
+                {/* //?---PARTE DERECHA--- */}
                 <div className={style.rightForm}>
                     <div className={style.steps}>
                         <label>Paso a Paso:</label>
