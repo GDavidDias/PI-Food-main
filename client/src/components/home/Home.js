@@ -12,35 +12,32 @@ function Home(){
     const pageItemsGlobal = useSelector((state)=>state.pageItems);
     const firstIndexGlobal = useSelector((state)=>state.firstIndex);
     const currentPageGlobal = useSelector((state)=>state.currentPage);
+    const itemsGlobal = useSelector((state)=>state.itemsPage)
 
-    //?---ESTADO LOCAL PARA PAGINADO CON ESTADOS GLOBALES
-    const [pageItems, setPageItems] = useState(pageItemsGlobal);
-    const [currentPage, setCurrentPage] = useState(currentPageGlobal);
-    const [item, setItems] = useState([...recipes].splice(firstIndexGlobal,pageItems));
-    
+    const dispatch = useDispatch();
 
     const nextPage = () => {
         //?AL PRESIONAR BOTON PARA PAGINA SIGUIENTE
-        const next_page = currentPage +1;
-        const firstIndex = next_page * pageItems;
+        const next_page = currentPageGlobal +1;
+        const firstIndex = next_page * pageItemsGlobal;
         if(firstIndex>=recipes.length) return;
         //?ACTUALIZO ESTADOS GLOBALES DE FIRSTINDEX Y CURRENTPAGE
+        //?y ACTUALIZO PAGINACION DE RECETAS
         dispatch(actions.setFirstIndexGlobal(firstIndex));
-        setItems([...recipes].splice(firstIndex,pageItems));
-        setCurrentPage(next_page);
         dispatch(actions.setCurrentPageGlobal(next_page));
+        dispatch(actions.setItemsGlobal());
     };
 
     const prevPage = () => {
         //?AL PRESIONAR BOTON PAGINA ANTERIOR
-        const prev_page = currentPage-1;
-        const firstIndex = prev_page * pageItems;
+        const prev_page = currentPageGlobal-1;
+        const firstIndex = prev_page * pageItemsGlobal;
         if(prev_page<0) return;
         //?ACTUALIZO ESTADOS GLOBALES DE FIRSTINDEX Y CURRENTPAGE
+        //?Y ACTUALIZO PAGINACION DE RECETAS
         dispatch(actions.setFirstIndexGlobal(firstIndex));
-        setItems([...recipes].splice(firstIndex,pageItems));
-        setCurrentPage(prev_page);
         dispatch(actions.setCurrentPageGlobal(prev_page));
+        dispatch(actions.setItemsGlobal());
     };
 
     const handleChange = (event) =>{
@@ -49,51 +46,29 @@ function Home(){
         //?SI CAMBIA CANTIDAD DE ITEMS POR PAGINA
         //?REGRESO A LA PRIMER PAGINA X NUEVA PAGINACION
         const {name, value} = event.target;
-        setPageItems(value);
-        setCurrentPage(0)
+        dispatch(actions.setPageItemsGlobal(value));
         //?ACTUALIZO ESTADOS GLOBALES para ir a primer pagina.
         dispatch(actions.setCurrentPageGlobal(0));
         dispatch(actions.setFirstIndexGlobal(0));
+        dispatch(actions.setItemsGlobal());
     };
- 
-    const dispatch = useDispatch();
-
-
-    //?SI CAMBIA ESTADO DE PAGINA GLOBAL, PREGUNTO SI ES LA PRIMER
-    //?PAGINA Y PAGINO DE NUEVO
-    useEffect(async()=>{
-        if(currentPageGlobal===0){
-            console.log("***Entra use Effect Pagina de nuevo - Cambio en CurrentPageGlobal: ", pageItemsGlobal);
-            setCurrentPage(0);
-            await setItems([...recipes].splice(firstIndexGlobal,pageItemsGlobal));
-        } 
-    },[currentPageGlobal])
 
 
     //?AL MODIFICARSE LA LISTA DE RECETAS POR ALGUN FILTRO
     //?SE PAGINA DE NUEVO
     useEffect(()=>{
-        console.log("Entra useEffect - recipes <Home>")
-        setItems([...recipes].splice(firstIndexGlobal,pageItems));
+        console.log("SI CAMBIA ESTADO RECETAS PAGINA NUEVO")
+        dispatch(actions.setItemsGlobal());
     },[recipes]);
 
-    useEffect(()=>{
-        //?AL CAMBIAR PAGEITEMS, ACTUALIZO ESTADO GLOBAL
-        console.log("Entra a useEffect - pageItems <Home>", pageItems)
-        dispatch(actions.addAllRecipes());
-        dispatch(actions.addAllDiets());   
-        //console.log("cambio estado global de pageItemsGlobal")
-        dispatch(actions.setPageItemsGlobal(pageItems));
-    },[pageItems])
 
     useEffect(async()=>{
         console.log(">>>> SE MONTA HOME")
         //?AL MONTAR TRAIGO ITEMS POR PAGINA Y PAGINO SEGUN
         //?FIRSTINDEX Y PAGEITEMS, PARA MANTENER LA PAGINACION
-        //console.log("que trae pageItemsGlobal:",pageItemsGlobal)
-        setPageItems(pageItemsGlobal);
-        //console.log("seteo con firstIndexGlobal")
-        await setItems([...recipes].splice(firstIndexGlobal,pageItemsGlobal));
+        dispatch(actions.addAllRecipes());
+        dispatch(actions.addAllDiets());        
+        dispatch(actions.setItemsGlobal());
     },[])
 
 
@@ -101,19 +76,19 @@ function Home(){
         <div className={style.container}>
             {/* ----- PAGINADO -----*/}
             <div className={style.navPage}>
-                <label name="numberPage">page: {currentPage+1}/{Math.ceil(recipes.length/pageItems)}</label>
+                <label name="numberPage">page: {currentPageGlobal+1}/{Math.ceil(recipes.length/pageItemsGlobal)}</label>
                 <button onClick={()=>prevPage()}>Prev</button>
                 <button onClick={()=>nextPage()}>Next</button>
                 <input 
                     name="numberItem" 
                     type="number" 
-                    value={pageItems}
+                    value={pageItemsGlobal}
                     onChange={handleChange}
                     ></input>
             </div>
             {/* ----- CONTENEDOR DE CARDS ----- */}
             <div className={style.cardsContainer}>
-                <Cards recipes={item} />
+                <Cards recipes={itemsGlobal} />
             </div>
         </div>
     )

@@ -1,4 +1,4 @@
-import { ADD_ALL, SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL, RESET, SET_UPD_ID} from "./types";
+import { ADD_ALL, SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL, RESET, SET_UPD_ID,SET_ITEMS_GLOBAL} from "./types";
 
 const initialState = {
     allRecipes:[],
@@ -11,6 +11,7 @@ const initialState = {
     pageItems:9,
     firstIndex:0,
     currentPage:0,
+    itemsPage:[],
     updId:"" //!variable de id para update
 }
 
@@ -18,6 +19,14 @@ const reducer = (state=initialState, action)=>{
     // console.log("entra al reducer -allRecipes: ", state.allRecipes);
     // console.log("que trae action -allRecipes: ", action);
     switch (action.type) {
+        case SET_ITEMS_GLOBAL:
+            console.log("Ingresa a SET_ITEMS_GLOBAL - REDUCER");
+            const newItemsPage = [...state.filterRecipes].splice(state.firstIndex,state.pageItems);
+            console.log("que trae nuevo itemsPage: ", newItemsPage)
+            return{
+                ...state,
+                itemsPage:newItemsPage
+            };
         case RESET:
             return{
                 ...state,

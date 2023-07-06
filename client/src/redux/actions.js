@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ADD_ALL , SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL, RESET, SET_UPD_ID} from "./types";
+import { ADD_ALL , SEARCH_RECIPES, ERROR, ORDER, ADD_ALL_DIETS, FILTER,SET_PAGEITEMS_GLOBAL,SET_FIRSTINDEX_GLOBAL,SET_CURRENTPAGE_GLOBAL , SET_RECIPESEARCH_GLOBAL, RESET, SET_UPD_ID,SET_ITEMS_GLOBAL} from "./types";
   const URL = 'http://localhost:3001';
 
 //ACTION -> addAllRecipes
@@ -101,3 +101,10 @@ export const setUpdId=(id)=>{
     payload:id
   }
 };
+
+//?paginacion global
+export const setItemsGlobal = ()=>{
+  return{
+    type:SET_ITEMS_GLOBAL
+  }
+}
