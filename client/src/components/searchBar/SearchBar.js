@@ -63,7 +63,7 @@ export default function SearchBar(prop){
     const handleChange=event=>{
         const {value}=event.target;
         console.log("entra a handleChange con value", value)
-        // ()=>prop.onSearch(value); 
+    
         //?ACTUALIZO ESTADO LOCAL DE NOMBRE RECETA A BUSCAR
         setName(value);
         //?ACTUALIZO ESTADO GLOBAL DE recipeSearch

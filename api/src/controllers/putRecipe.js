@@ -29,7 +29,7 @@ const putRecipe = async function(req,res){
         //?ACTUALIZO BD SEGUN ID y SU TABLA RELACIONADA
         await Recipe.findByPk(idRecipe)
             .then(recipe=>{
-                console.log("que trae recipe de findByPk ", recipe)
+                //console.log("que trae recipe de findByPk ", recipe)
                 if(recipe){
                     //?ACTUALIZO DATOS DE RECETA
                     return recipe.update(objUpd)
@@ -46,17 +46,6 @@ const putRecipe = async function(req,res){
             .catch(error =>{
                 console.log("Error al ACTUALIZAR recetas y dietas ", error)
             })
-        // await Recipe.update(objUpd,{
-        //     where: {
-        //         id:idRecipe
-        //     }
-        // });
-
-        // //?INSERTO NUEVA RECETA A BD
-        // const newRecipe = await Recipe.create(objCreated);
-        // //?CARGAMOS LA TABLA INTERMEDIA Y ASOCIAMOS LA/S DIETA
-        // //?La dieta viene como arreglo en diet, por body, por eso se carga primero la tabla diets
-        // await newRecipe.addDiet(diets);
             
         return res.status(200).json("Receta ACTUALIZADA exitosamente");
 

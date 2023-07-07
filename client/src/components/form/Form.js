@@ -228,7 +228,9 @@ export default function Form(props){
         dispatch(actions.setUpdId(""))
     };
 
-    //!PRUEBA DE USO FORM PARA MODIFICAR RECETA
+    //!--PARA MODIFICAR RECETA
+    //?--SI LA VARIABLE GLOBAL updId, TIENE UN VALOR
+    //?--SE ASIGNO EN FORMULARIO DETALLE.
     useEffect(async()=>{
         console.log(">>> AL MONTAR FORM");
         //Si variable global updId tiene un valor, se modifica
@@ -415,7 +417,7 @@ export default function Form(props){
                 </div>
             </div>
 
-                <button disabled={!estadoError} type="submit">SUBMIT</button>
+                <button disabled={!estadoError} type="submit">CARGAR RECETA</button>
             </form>
         </div>
     )

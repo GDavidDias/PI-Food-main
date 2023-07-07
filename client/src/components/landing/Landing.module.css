@@ -1,5 +1,6 @@
 .contenedor{
-    background-color: #fdf6e7;
+    /* background-color: #fdf6e7; */
+	background-image: linear-gradient(to top, #fda085 0%, #f6d365 100%);
     min-height: 100vh;
     padding:10px;
 }

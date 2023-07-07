@@ -2,9 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import style from "./Home.module.css";
 import * as actions from "../../redux/actions";
 import Cards from "../cards/Cards";
-import { useEffect, useState } from "react";
-
-
+import { useEffect } from "react";
 
 function Home(){
     //?----TRAIGO LOS ESTADOS GLOBALES
@@ -12,7 +10,9 @@ function Home(){
     const pageItemsGlobal = useSelector((state)=>state.pageItems);
     const firstIndexGlobal = useSelector((state)=>state.firstIndex);
     const currentPageGlobal = useSelector((state)=>state.currentPage);
-    const itemsGlobal = useSelector((state)=>state.itemsPage)
+    const itemsGlobal = useSelector((state)=>state.itemsPage);
+
+    const arrayPageGlobal = useSelector((state)=>state.arrayPage);
 
     const dispatch = useDispatch();
 
@@ -40,12 +40,19 @@ function Home(){
         dispatch(actions.setItemsGlobal());
     };
 
+    //?AL PRESIONAR SOBRE BOTON PAGINA
+    const setPage = (page)=>{
+        //console.log("que trae page: ", page)
+        const firstIndex = (page-1) * pageItemsGlobal;
+        dispatch(actions.setFirstIndexGlobal(firstIndex));
+        dispatch(actions.setCurrentPageGlobal(page-1));
+        dispatch(actions.setItemsGlobal());
+    };
+
     const handleChange = (event) =>{
         //?AL PRESIONAR CAMBIO ITEMS POR PAGINA
         //console.log("entra a handleChange")
-        //?SI CAMBIA CANTIDAD DE ITEMS POR PAGINA
-        //?REGRESO A LA PRIMER PAGINA X NUEVA PAGINACION
-        const {name, value} = event.target;
+        const {value} = event.target;
         dispatch(actions.setPageItemsGlobal(value));
         //?ACTUALIZO ESTADOS GLOBALES para ir a primer pagina.
         dispatch(actions.setCurrentPageGlobal(0));
@@ -62,21 +69,23 @@ function Home(){
     },[recipes]);
 
 
-    useEffect(async()=>{
+    //?AL MONTAR TRAIGO ITEMS POR PAGINA Y PAGINO SEGUN
+    //?FIRSTINDEX Y PAGEITEMS, PARA MANTENER LA PAGINACION
+    useEffect(()=>{
         console.log(">>>> SE MONTA HOME")
-        //?AL MONTAR TRAIGO ITEMS POR PAGINA Y PAGINO SEGUN
-        //?FIRSTINDEX Y PAGEITEMS, PARA MANTENER LA PAGINACION
         dispatch(actions.addAllRecipes());
         dispatch(actions.addAllDiets());        
-        dispatch(actions.setItemsGlobal());
+        dispatch(actions.setItemsGlobal());   
     },[])
-
 
     return(
         <div className={style.container}>
             {/* ----- PAGINADO -----*/}
             <div className={style.navPage}>
-                <label name="numberPage">page: {currentPageGlobal+1}/{Math.ceil(recipes.length/pageItemsGlobal)}</label>
+                <div className={style.pagesCont}>
+                    {/* <label name="numberPage">page: {currentPageGlobal+1}/{Math.ceil(recipes.length/pageItemsGlobal)}</label> */}
+                    <p name="numberPage">page: {currentPageGlobal+1}/{Math.ceil(recipes.length/pageItemsGlobal)}</p>
+                </div>
                 <button onClick={()=>prevPage()}>Prev</button>
                 <button onClick={()=>nextPage()}>Next</button>
                 <input 
@@ -85,6 +94,13 @@ function Home(){
                     value={pageItemsGlobal}
                     onChange={handleChange}
                     ></input>
+            </div>
+            <div className={style.buttonPage}>
+                {
+                    arrayPageGlobal?.map((page, index)=>(
+                        <button key={index} onClick={()=>setPage(page)}>{page}</button>
+                    ))
+                }
             </div>
             {/* ----- CONTENEDOR DE CARDS ----- */}
             <div className={style.cardsContainer}>

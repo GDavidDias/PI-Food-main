@@ -1,6 +1,8 @@
 .App {
   text-align: center;
-  background-color: rgb(250, 233, 202);
+
+  /* background-color: #fae9ca; */
+  background-image: linear-gradient(to top, #fae9ca 0%, #ffff 100%);
   min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
   

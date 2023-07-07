@@ -53,7 +53,8 @@ const searchRecipes = async function(req,res){
             }],
         });
         // console.log("que trae recipesFind: ")
-        // console.log(listBd)
+        //  console.log("que trae listBd: ",listBd)
+        //  console.log("que trae listBd.diets: ", listBd.diets)
         //?--FORMATEA DATOS DE BD
         const listRecipesBd = listBd.map((recipe)=>{
             return{id:recipe.id,

@@ -16,12 +16,12 @@ const postRecipe = async function(req,res){
         objCreated={title,image,summary,healthScore,steps}
     }
 
-    // console.log("datos por body -title : ",title);
-    // console.log("datos por body -image : ",image);
-    // console.log("datos por body -summary : ",summary);
-    // console.log("datos por body -healthScore : ",healthScore);
-    // console.log("datos por body -steps : ",steps);
-    // console.log("datos por body -diet : ",diets);
+    // console.log("datos por body -title : ",title); //"..."
+    // console.log("datos por body -image : ",image); // "..."
+    // console.log("datos por body -summary : ",summary); //"..."
+    // console.log("datos por body -healthScore : ",healthScore); // "52"
+    // console.log("datos por body -steps : ",steps); // [ {number, step}, {number, step}, {number, step}]
+    // console.log("datos por body -diet : ",diets); // [ 2, 5 ]
     try{
 
         //?INSERTO NUEVA RECETA A BD

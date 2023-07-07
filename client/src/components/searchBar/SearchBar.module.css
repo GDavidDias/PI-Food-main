@@ -1,4 +1,6 @@
 .divSearch{
+    /* #fae9ca */
+    background-image: linear-gradient(to top, #fae9ca 0%, #ffff 100%);
     display: flex;
     justify-content: center;
     flex-direction: row-reverse;

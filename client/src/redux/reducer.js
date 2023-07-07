@@ -12,6 +12,7 @@ const initialState = {
     firstIndex:0,
     currentPage:0,
     itemsPage:[],
+    arrayPage:[],
     updId:"" //!variable de id para update
 }
 
@@ -23,9 +24,16 @@ const reducer = (state=initialState, action)=>{
             console.log("Ingresa a SET_ITEMS_GLOBAL - REDUCER");
             const newItemsPage = [...state.filterRecipes].splice(state.firstIndex,state.pageItems);
             console.log("que trae nuevo itemsPage: ", newItemsPage)
+
+            const newArrayPage = [];
+            for(let i=1;i<=Math.ceil(state.filterRecipes.length/state.pageItems);i++){
+                newArrayPage.push(i);
+            }
+            console.log("como se arma arraypage: ", newArrayPage);
             return{
                 ...state,
-                itemsPage:newItemsPage
+                itemsPage:newItemsPage,
+                arrayPage:newArrayPage
             };
         case RESET:
             return{
