@@ -15,6 +15,8 @@ export default function Form(props){
     //?---ESTADOS GLOBALES---
     const dietsList = useSelector((state)=>state.allDiets);
     // console.log("que trae useSelector -allDiets: ", diets)
+
+    //!--Estado Global para editar una receta
     const idUpdate = useSelector((state)=>state.updId);
 
     //?----- ESTADOS LOCALES------
@@ -22,23 +24,22 @@ export default function Form(props){
         title:"",
         summary:"",
         healthScore:"",
-        steps:[],
+        steps:[],  //[ {number,step}, {number,step}, {number,step} ]
         image:"",
-        diets:[], //
+        diets:[], //[5,7,8..]
     });
 
     const [paso,setPasos] = useState("");
 
-    const [estadoError, setEstadoError] = useState(true)
+    const [estadoError, setEstadoError] = useState(true);
 
-    //*se arreglo de objetos -> {id,name}
-    const [dieta, setDieta] = useState([])
+    const [dieta, setDieta] = useState([]); // [{id,name},{id,name},{id,name}]
 
     const [error, setError] = useState({
         title:"",
         healthScore:"",
         diets:""
-    })
+    });
 
     
 
@@ -56,6 +57,7 @@ export default function Form(props){
         // console.log("que trae estado dieta: ", dieta)
     },[form],[error],[dieta],[estadoError]);
 
+    //?Verifica las propiedades del estado error
     const allPropVacias = (obj)=>{
         for (let propiedad in obj){
             if(obj[propiedad] !== "" && obj[propiedad].length !==0) return false;
@@ -63,6 +65,8 @@ export default function Form(props){
         return true;
     };
 
+
+    //?Verfiicar que las propiedades de form tengan valores cargados.
     const anyPropVacias = (obj)=>{
         for(let propiedad in obj){
             //?PORQUE IMAGEN NO ES OBLIGATORIO Y TIENE VALOR POR DEFECTO EN BD
@@ -71,40 +75,40 @@ export default function Form(props){
             }
         }
         return false;
-    }
+    };
 
+    //!-------------------------------------------------------
+    //?---------    SI CAMBIA ELEMENTOS DEL FORM   -----------
+    //!-------------------------------------------------------
     const handleChange = (event) =>{
         const {name, value, selectedIndex} = event.target;
-        console.log("que trae name: ", name)
-        console.log("que trae value: ", value)        
-        console.log("que trae estado error: ",estadoError)
-        console.log("que trae error: ", error);
+        // console.log("que trae name: ", name)
+        // console.log("que trae value: ", value)        
+        // console.log("que trae estado error: ",estadoError)
+        // console.log("que trae error: ", error);
         setForm({
             ...form,
             [name]:value
         });
+
+        //?Para Validar title y healthscore
         validate({
             ...form,
             [name]:value
         },name, value);
         
-        //Actualizo estado de pasos y formateo
+        //?Actualizo estado de pasos y formateo
         if(name==='steps'){
-            setPasos(value)
+            setPasos(value);
             // console.log(form.steps)
-            formatStep(value)
-        }
+            formatStep(value);
+        };
 
         if(name==='selectDiet'){
             if(!dieta.some((obj)=>obj.id === selectedIndex)){
-                const objdiet = {
-                    id:selectedIndex,
-                    name:value
-                }
                 //?MODIFICO EL ESTADO DE DIETA, CON NUEVA DIETA
                 setDieta([...dieta, {id:selectedIndex,name:value}])
-                //dieta.push({id:selectedIndex,name:value});
-                //form.diets.push(selectedIndex);
+
                 //?--MODIFICO ESTADO DE FORM
                 //?--copio el estado actual del form
                 const formActual = {...form};
@@ -115,10 +119,8 @@ export default function Form(props){
                 //?--seteo el estado local de form para actualizarlo
                 setForm(formActual);
 
-                setError({...error,diets:""})
-            }else{
-                // setError({...error,diets:"No se pueden repetir dietas"})
-            }
+                setError({...error,diets:""});
+            };
             // console.log("que trae estado dieta: ", dieta)
         }
         console.log("que trae estado form: ", form)
@@ -203,6 +205,8 @@ export default function Form(props){
             });
     };
 
+
+    //?--PRESIONO SUBMIT FORM
     const submitHandler = async(event)=>{
         event.preventDefault();
         console.log("que tiene form antes de upd o create: ", form)
@@ -229,8 +233,7 @@ export default function Form(props){
     };
 
     //!--PARA MODIFICAR RECETA
-    //?--SI LA VARIABLE GLOBAL updId, TIENE UN VALOR
-    //?--SE ASIGNO EN FORMULARIO DETALLE.
+    //?--SI LA VARIABLE GLOBAL updId, TIENE UN VALOR SE ASIGNO EN FORMULARIO DETALLE.
     useEffect(async()=>{
         console.log(">>> AL MONTAR FORM");
         //Si variable global updId tiene un valor, se modifica
@@ -278,7 +281,7 @@ export default function Form(props){
                                 // setDieta([...dieta, {id:diet.id,name:diet.name}])
                                 listdietforform.push(diet.id);
                                 form.diets.push(diet.id);
-                                listdietforstate.push({id:diet.id,name:diet.name})
+                                listdietforstate.push({id:diet.id,name:diet.name});
                             }
                         }
                         console.log("como queda listdietforstate: ", listdietforstate)
@@ -293,14 +296,15 @@ export default function Form(props){
                     
                 }
             }catch(error){
-                console.log("error en busqueda de receta")
+                console.log("error en busqueda de receta");
             }
-            
-        }
+        };
         console.log("como queda form: ",form)
         
-    },[])
+    },[]);
 
+
+    //?AL DESMONTARSE COMPONENTE FORM
     useEffect(()=>{
         return()=>{
             console.log(">>> SE DESMONTA FORM");
@@ -309,7 +313,8 @@ export default function Form(props){
                 dispatch(actions.setUpdId(""));
             } 
         };
-    },[])
+    },[]);
+
 
     return(
         <div>

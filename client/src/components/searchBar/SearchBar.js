@@ -38,7 +38,6 @@ export default function SearchBar(prop){
         dispatch(actions.setFirstIndexGlobal(0));
     };
 
-
     //!AL ESCRIBIR EN EL INPUT DE BUSQUEDA DE NOMBRE
     const handleChange=event=>{
         const {value}=event.target;

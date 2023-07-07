@@ -83,7 +83,6 @@ function Home(){
             {/* ----- PAGINADO -----*/}
             <div className={style.navPage}>
                 <div className={style.pagesCont}>
-                    {/* <label name="numberPage">page: {currentPageGlobal+1}/{Math.ceil(recipes.length/pageItemsGlobal)}</label> */}
                     <p name="numberPage">page: {currentPageGlobal+1}/{Math.ceil(recipes.length/pageItemsGlobal)}</p>
                 </div>
                 <button onClick={()=>prevPage()}>Prev</button>
