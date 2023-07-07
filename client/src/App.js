@@ -10,25 +10,20 @@ import Home from './components/home/Home';
 
 
 function App() {
-
-  // const recipes = useSelector((state)=>state.filterRecipes)
-  // console.log("que trae useSelector -allRecipes: ", recipes)
-
-  // const diets = useSelector((state)=>state.allDiets)
-  // console.log("que trae useSelector -allDiets: ", diets)
   
   const location = useLocation();
 
   const dispatch = useDispatch();
 
-  const onSearch = async (value)=>{
-    dispatch(actions.searchRecipes(value));
-  }
+  // const onSearch = async (value)=>{
+  //   dispatch(actions.searchRecipes(value));
+  // }
 
   return (
     <div className="App">
       <div>
-        {location.pathname!=='/' ?<Nav onSearch={onSearch} ></Nav> :null}
+        {/* {location.pathname!=='/' ?<Nav onSearch={onSearch} ></Nav> :null} */}
+        {location.pathname!=='/' ?<Nav/> :null}
       </div>
       <div>
         <Routes>

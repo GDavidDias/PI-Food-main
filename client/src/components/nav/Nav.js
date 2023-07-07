@@ -1,8 +1,5 @@
 import style from "./Nav.module.css";
-
-// import { useDispatch } from "react-redux";
 import SearchBar from "../searchBar/SearchBar";
-// import * as actions from '../../redux/actions';
 import { Link, useLocation } from "react-router-dom";
 
 
@@ -23,7 +20,7 @@ export default function Nav(prop){
             <div>
                 <div>
                     {location.pathname==='/home' 
-                        ?<SearchBar onSearch={prop.onSearch} prop={prop}/> 
+                        ?<SearchBar /> 
                         :null
                     }
                 </div>
